@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { List, ListSchema } from './schemas/list.schema';
+import { ListsController } from './lists.controller';
+import { ListsService } from './lists.service';
 
 @Module({
   imports: [
@@ -11,5 +13,7 @@ import { List, ListSchema } from './schemas/list.schema';
       },
     ]),
   ],
+  controllers: [ListsController],
+  providers: [ListsService],
 })
 export class ListsModule {}

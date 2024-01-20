@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Subtask, SubtaskSchema } from './schemas/subtask.schema';
+import { SubtasksController } from './subtasks.controller';
+import { SubtasksService } from './subtasks.service';
 
 @Module({
   imports: [
@@ -11,5 +13,7 @@ import { Subtask, SubtaskSchema } from './schemas/subtask.schema';
       },
     ]),
   ],
+  controllers: [SubtasksController],
+  providers: [SubtasksService],
 })
 export class SubtasksModule {}
