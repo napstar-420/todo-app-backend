@@ -7,13 +7,13 @@ export type UserSchema = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop()
+  @Prop({ default: [] })
   lists: List[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Task' }], default: [] })
