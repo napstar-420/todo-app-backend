@@ -6,6 +6,7 @@ import {
   MaxLength,
   IsArray,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class CreateTaskDto {
@@ -33,4 +34,8 @@ export class CreateTaskDto {
   @IsArray()
   @MaxLength(6)
   readonly tags?: Set<string>;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly completed?: boolean;
 }

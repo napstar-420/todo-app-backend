@@ -3,6 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 import { List } from 'src/lists/schemas/list.schema';
 import { Subtask } from 'src/subtasks/schemas/subtask.schema';
 import { Tag } from 'src/tags/schemas/tag.schema';
+import { User } from 'src/users/schemas/user.schema';
 
 export type TaskDocument = HydratedDocument<Task>;
 
@@ -37,6 +38,9 @@ export class Task {
 
   @Prop({ type: Date, default: null })
   completedAt: Date;
+
+  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  user: User;
 }
 
 const TaskSchema = SchemaFactory.createForClass(Task);

@@ -34,7 +34,7 @@ export class TasksService {
     );
   }
 
-  async deleteOne(id: string) {
+  async removeOne(id: string) {
     return this.taskModel.deleteOne({ _id: id });
   }
 }

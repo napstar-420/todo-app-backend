@@ -13,7 +13,7 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'List' }], default: [] })
   lists: List[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Task' }], default: [] })
