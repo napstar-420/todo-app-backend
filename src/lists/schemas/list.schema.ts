@@ -3,7 +3,7 @@ import { HydratedDocument, Model, Types } from 'mongoose';
 import { Task } from 'src/tasks/schemas/task.schema';
 import { User } from 'src/users/schemas/user.schema';
 
-export type UserSchema = HydratedDocument<List>;
+export type ListSchema = HydratedDocument<List>;
 
 @Schema()
 export class List {
