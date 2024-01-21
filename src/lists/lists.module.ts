@@ -1,15 +1,27 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { List, ListSchema } from './schemas/list.schema';
 import { ListsController } from './lists.controller';
 import { ListsService } from './lists.service';
+import { Model } from 'mongoose';
+import { Task } from 'src/tasks/schemas/task.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+    MongooseModule.forFeatureAsync([
       {
         name: List.name,
-        schema: ListSchema,
+        useFactory: (taskModel: Model<Task>) => {
+          const schema = ListSchema;
+
+          schema.pre('deleteOne', { document: true }, async function (next) {
+            taskModel.deleteMany({ list: this.id });
+            next();
+          });
+
+          return schema;
+        },
+        inject: [getModelToken('Task')],
       },
     ]),
   ],
