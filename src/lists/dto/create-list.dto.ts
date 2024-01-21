@@ -1,5 +1,7 @@
 import {
+  IsArray,
   IsHexColor,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -15,4 +17,11 @@ export class CreateListDto {
   @IsOptional()
   @IsHexColor()
   readonly color: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsMongoId({
+    each: true,
+  })
+  readonly tasks: string[];
 }

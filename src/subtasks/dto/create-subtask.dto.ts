@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -11,6 +12,10 @@ export class CreateSubtaskDto {
   @IsString()
   @MaxLength(64)
   readonly title: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  readonly task: string;
 
   @IsOptional()
   @IsString()

@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { Task } from 'src/tasks/schemas/task.schema';
 
 export type SubtaskSchema = HydratedDocument<Subtask>;
 
@@ -13,6 +14,9 @@ export class Subtask {
 
   @Prop({ default: false })
   completed: boolean;
+
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })
+  task: Task;
 }
 
 const SubtaskSchema = SchemaFactory.createForClass(Subtask);
