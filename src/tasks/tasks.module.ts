@@ -17,6 +17,6 @@ import { LoggerModule } from 'src/logger/logger.module';
   ],
   controllers: [TasksController],
   providers: [TasksService],
-  exports: [TasksService],
+  exports: [TasksService, MongooseModule],
 })
 export class TasksModule {}

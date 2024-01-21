@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Task } from 'src/tasks/schemas/task.schema';
 import { User } from 'src/users/schemas/user.schema';
 
@@ -25,4 +25,11 @@ export class List {
 
 const ListSchema = SchemaFactory.createForClass(List);
 
-export { ListSchema };
+const schemaFactory = (taskModel: Model<Task>) => {
+  ListSchema.virtual('tasksCount').get(async function () {
+    return taskModel.countDocuments({ list: this._id });
+  });
+  return ListSchema;
+};
+
+export { ListSchema, schemaFactory };

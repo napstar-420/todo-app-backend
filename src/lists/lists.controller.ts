@@ -19,7 +19,7 @@ export class ListsController {
 
   @Get()
   findAll(@Req() { user }) {
-    return this.findAll(user.sub);
+    return this.listsService.findAll(user.sub);
   }
 
   @Get(':id')

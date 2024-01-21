@@ -14,6 +14,10 @@ export class TasksService {
     private readonly loggerService: LoggerService,
   ) {}
 
+  getTaskModel() {
+    return this.taskModel;
+  }
+
   async findAll() {
     return this.taskModel.find();
   }

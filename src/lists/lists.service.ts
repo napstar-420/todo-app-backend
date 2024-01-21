@@ -15,12 +15,16 @@ export class ListsService {
       throw new NotFoundException();
     }
 
-    return this.listModel.find({ user });
+    return this.listModel
+      .find({ user })
+      .select('title color tasksCount')
+      .exec();
   }
 
   async findOne(id: string) {
     const list = await this.listModel
       .findById(id)
+      .select('title color tasks')
       .populate({
         path: 'task',
         select: 'title dueDate subtasksCount',
@@ -39,8 +43,7 @@ export class ListsService {
   }
 
   async update(id: string, updateListDto: UpdateListDto) {
-    await this.listModel.updateOne(updateListDto);
-    return this.listModel.findById(id);
+    return this.listModel.updateOne({ _id: id }, updateListDto).exec();
   }
 
   async remove(id: string) {
