@@ -15,5 +15,6 @@ import { SubtasksService } from './subtasks.service';
   ],
   controllers: [SubtasksController],
   providers: [SubtasksService],
+  exports: [SubtasksService, MongooseModule],
 })
 export class SubtasksModule {}

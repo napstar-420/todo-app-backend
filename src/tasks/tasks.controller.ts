@@ -16,7 +16,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return { id };
+    return this.tasksService.findOne(id);
   }
 
   @Post()

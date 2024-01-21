@@ -26,7 +26,7 @@ export class ListsService {
       .findById(id)
       .select('title color tasks')
       .populate({
-        path: 'task',
+        path: 'tasks',
         select: 'title dueDate subtasksCount',
       })
       .exec();
@@ -47,6 +47,6 @@ export class ListsService {
   }
 
   async remove(id: string) {
-    return this.listModel.findByIdAndDelete(id);
+    return this.listModel.deleteOne({ id });
   }
 }

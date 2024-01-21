@@ -10,8 +10,11 @@ export class Tag {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })
-  task: Task;
+  @Prop({
+    required: true,
+    type: [{ required: true, type: Types.ObjectId, ref: 'Task' }],
+  })
+  task: Task[];
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   user: User;

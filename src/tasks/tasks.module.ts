@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from './schemas/task.schema';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { Task, schemaFactory } from './schemas/task.schema';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { LoggerModule } from 'src/logger/logger.module';
+import { SubtasksModule } from 'src/subtasks/subtasks.module';
+import { Subtask } from 'src/subtasks/schemas/subtask.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+    SubtasksModule,
+    MongooseModule.forFeatureAsync([
       {
+        imports: [SubtasksModule],
         name: Task.name,
-        schema: TaskSchema,
+        useFactory: schemaFactory,
+        inject: [getModelToken(Subtask.name)],
       },
     ]),
     LoggerModule,

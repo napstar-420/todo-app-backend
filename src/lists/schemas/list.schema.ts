@@ -27,7 +27,7 @@ const ListSchema = SchemaFactory.createForClass(List);
 
 const schemaFactory = (taskModel: Model<Task>) => {
   ListSchema.virtual('tasksCount').get(async function () {
-    return taskModel.countDocuments({ list: this._id });
+    return await taskModel.countDocuments({ list: this._id }).exec();
   });
   return ListSchema;
 };

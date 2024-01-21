@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { List } from 'src/lists/schemas/list.schema';
 import { Subtask } from 'src/subtasks/schemas/subtask.schema';
 import { Tag } from 'src/tags/schemas/tag.schema';
@@ -45,4 +45,11 @@ export class Task {
 
 const TaskSchema = SchemaFactory.createForClass(Task);
 
-export { TaskSchema };
+const schemaFactory = (subtasksModel: Model<Subtask>) => {
+  TaskSchema.virtual('subtasksCount').get(async function () {
+    return await subtasksModel.countDocuments({ task: this._id }).exec();
+  });
+  return TaskSchema;
+};
+
+export { TaskSchema, schemaFactory };

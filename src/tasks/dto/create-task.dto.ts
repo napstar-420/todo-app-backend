@@ -32,7 +32,10 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsArray()
-  @MaxLength(6)
+  @MaxLength(12)
+  @IsMongoId({
+    each: true,
+  })
   readonly tags?: Set<string>;
 
   @IsOptional()

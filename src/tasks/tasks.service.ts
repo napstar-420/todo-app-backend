@@ -14,14 +14,6 @@ export class TasksService {
     private readonly loggerService: LoggerService,
   ) {}
 
-  getTaskModel() {
-    return this.taskModel;
-  }
-
-  async findAll() {
-    return this.taskModel.find();
-  }
-
   async findListTasks(listID: string) {
     if (!isMongoId(listID)) {
       throw new NotFoundException('Invalid mongo ID');
@@ -30,21 +22,46 @@ export class TasksService {
     return this.taskModel.find({ list: listID });
   }
 
+  async findOne(id: string) {
+    if (!isMongoId(id)) {
+      throw new NotFoundException('Invalid mongo ID');
+    }
+
+    return this.taskModel
+      .findById(id)
+      .select('title description dueDate list subtasks tags completed')
+      .populate({
+        path: 'list',
+        select: 'title',
+      })
+      .populate({
+        path: 'subtasks',
+        select: 'title description completed',
+      })
+      .populate({
+        path: 'tags',
+        select: 'name',
+      })
+      .exec();
+  }
+
   async create(createTaskDto: CreateTaskDto) {
-    const task = new this.taskModel(createTaskDto);
-    await task.save();
-    return task;
+    return new this.taskModel(createTaskDto).save();
   }
 
   async update(id: string, updatedTaskDto: UpdateTaskDto) {
-    return this.taskModel.findOneAndUpdate(
-      { _id: id },
-      {
-        ...updatedTaskDto,
-        updatedAt: new Date(),
-        completedAt: updatedTaskDto.completed ? new Date() : null,
-      },
-    );
+    await this.taskModel
+      .findOneAndUpdate(
+        { _id: id },
+        {
+          ...updatedTaskDto,
+          updatedAt: new Date(),
+          completedAt: updatedTaskDto.completed ? new Date() : null,
+        },
+      )
+      .exec();
+
+    return this.findOne(id);
   }
 
   async removeOne(id: string) {
