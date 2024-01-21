@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Task, TaskSchema } from './schemas/task.schema';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TasksService } from './tasks.service';
         schema: TaskSchema,
       },
     ]),
+    LoggerModule,
   ],
   controllers: [TasksController],
   providers: [TasksService],
