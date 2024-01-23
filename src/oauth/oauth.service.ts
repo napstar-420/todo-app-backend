@@ -19,6 +19,10 @@ export class OAuthService {
     return await this.oAuth2Client.getToken(code);
   }
 
+  async getTokenInfo(token: string) {
+    return await this.oAuth2Client.getTokenInfo(token);
+  }
+
   async verifyIdToken(idToken: string) {
     return await this.oAuth2Client.verifyIdToken({
       idToken: idToken,

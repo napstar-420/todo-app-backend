@@ -3,9 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { OauthModule } from 'src/oauth/oauth.module';
 
 @Module({
   imports: [
+    OauthModule,
     MongooseModule.forFeature([
       {
         name: User.name,

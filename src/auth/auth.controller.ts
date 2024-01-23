@@ -9,15 +9,14 @@ export class AuthController {
   @Public()
   @Post('google/login')
   async googleAuth(@Body('code') code: string, @Res() res) {
-    const { user, accessToken, refreshToken, expiryDate } =
+    const { user, accessToken, refreshToken } =
       await this.authService.googleAuth(code);
 
     res.cookie('refresh_token', refreshToken, {
-      maxAge: expiryDate,
       sameSite: true,
       secure: true,
     });
 
-    return { user, accessToken };
+    res.send({ user, accessToken });
   }
 }

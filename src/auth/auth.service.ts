@@ -1,18 +1,23 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { TokenPayload } from 'google-auth-library';
 import { UsersService } from 'src/users/users.service';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { LoggerService } from 'src/logger/logger.service';
-import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { OAuthService } from 'src/oauth/oauth.service';
+import { JwtPayloadDto } from './dto/jwt-payload.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly loggerService: LoggerService,
     private readonly oAuthService: OAuthService,
   ) {}
+
+  async generateJwtToken(payload: JwtPayloadDto, options?: JwtSignOptions) {
+    return this.jwtService.signAsync(payload, options);
+  }
 
   async googleAuth(code: string) {
     try {
@@ -21,7 +26,7 @@ export class AuthService {
         tokenResponse.tokens.id_token,
       );
       const tokenPayload = ticket.getPayload();
-      return this.googleSignIn(tokenPayload, tokenResponse);
+      return await this.googleSignIn(tokenPayload);
     } catch (error) {
       this.loggerService.error(
         'Failed to obtain Google token',
@@ -32,45 +37,55 @@ export class AuthService {
     }
   }
 
-  async googleSignIn(
-    tokenPayload: TokenPayload,
-    tokenResponse: GetTokenResponse,
-  ) {
-    const { email, given_name, family_name, picture } = tokenPayload;
+  async googleSignIn(tokenPayload: TokenPayload) {
     const {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      expiry_date: expiryDate,
-    } = tokenResponse.tokens;
+      email,
+      given_name: firstName,
+      family_name: lastName,
+      picture: avatar,
+    } = tokenPayload;
 
     const user = {
-      given_name,
-      family_name,
-      picture,
       email,
+      firstName,
+      lastName,
+      avatar,
       id: '',
     };
 
     const isUserExists = await this.usersService.findByEmail(email);
 
     if (isUserExists) {
-      await this.usersService.updateRefreshToken(isUserExists.id, refreshToken);
       user.id = isUserExists.id;
     } else {
-      const createUserDto: CreateUserDto = {
-        email,
-        refreshToken,
-      };
-
-      const newUser = await this.usersService.create(createUserDto);
+      const newUser = await this.usersService.create(user);
       user.id = newUser.id;
     }
+
+    const jwtPayload: JwtPayloadDto = {
+      email: user.email,
+      sub: user.id,
+    };
+
+    const accessToken = await this.generateJwtToken(jwtPayload, {
+      expiresIn: '1d',
+    });
+    const refreshToken = await this.generateJwtToken(jwtPayload, {
+      expiresIn: '30d',
+    });
+
+    await this.usersService.update(user.id, {
+      email,
+      refreshToken,
+      avatar,
+      firstName,
+      lastName,
+    });
 
     return {
       user,
       accessToken,
       refreshToken,
-      expiryDate,
     };
   }
 }
