@@ -1,34 +1,23 @@
-import { Controller, Get, UseGuards, Req, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { Public } from 'src/decorators/skip-auth';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @Get('google')
-  @UseGuards(GoogleOauthGuard)
-  googleAuth() {
-    return 'google auth';
-  }
+  @Post('google/login')
+  async googleAuth(@Body('code') code: string, @Res() res) {
+    const { user, accessToken, refreshToken, expiryDate } =
+      await this.authService.googleAuth(code);
 
-  @Public()
-  @Get('google/callback')
-  @UseGuards(GoogleOauthGuard)
-  async googleCallback(@Req() req, @Res() res: Response) {
-    const createUserDto: CreateUserDto | undefined = req?.user;
-    const { token, user } = await this.authService.googleSignIn(createUserDto);
-
-    res.cookie('access_token', token, {
-      maxAge: 2592000000,
+    res.cookie('refresh_token', refreshToken, {
+      maxAge: expiryDate,
       sameSite: true,
       secure: true,
     });
 
-    return user;
+    return { user, accessToken };
   }
 }

@@ -7,17 +7,8 @@ export type UserSchema = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
-  firstName: string;
-
-  @Prop({ required: true })
-  lastName: string;
-
   @Prop({ required: true, unique: true })
   email: string;
-
-  @Prop({ default: '' })
-  avatar: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'List' }], default: [] })
   lists: List[];
@@ -27,6 +18,9 @@ export class User {
 
   @Prop({ type: Date, default: new Date() })
   createdAt: Date;
+
+  @Prop({ required: true })
+  refreshToken: string;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
