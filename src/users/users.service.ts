@@ -34,7 +34,13 @@ export class UsersService {
       throw new NotFoundException('Invalid ID');
     }
 
-    return this.userModel.findOneAndUpdate({ id }, updatedUser).exec();
+    await this.userModel.findOneAndUpdate({ _id: id }, updatedUser).exec();
+
+    return true;
+  }
+
+  async findByRefreshToken(refreshToken: string) {
+    return await this.userModel.findOne({ refreshToken }).exec();
   }
 
   async updateRefreshToken(id: string, refreshToken: string) {

@@ -28,7 +28,7 @@ export class User {
   @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ default: '' })
   refreshToken: string;
 }
 

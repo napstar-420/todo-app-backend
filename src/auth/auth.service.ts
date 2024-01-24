@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TokenPayload } from 'google-auth-library';
 import { UsersService } from 'src/users/users.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -9,7 +13,7 @@ import { JwtPayloadDto } from './dto/jwt-payload.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly loggerService: LoggerService,
     private readonly oAuthService: OAuthService,
@@ -87,5 +91,42 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async verifyRefreshToken(refreshToken: string) {
+    const isUserExists =
+      await this.usersService.findByRefreshToken(refreshToken);
+
+    if (!isUserExists) {
+      try {
+        const decoded = await this.jwtService.verifyAsync(refreshToken);
+        await this.usersService.update(decoded.sub, { refreshToken: '' });
+      } catch (error) {
+        throw new ForbiddenException();
+      } finally {
+        throw new ForbiddenException();
+      }
+    }
+
+    try {
+      const decoded = await this.jwtService.verifyAsync(refreshToken);
+      if (decoded.sub !== isUserExists.id) {
+        throw new ForbiddenException();
+      }
+    } catch (error) {
+      throw new ForbiddenException();
+    }
+
+    const accessToken = await this.generateJwtToken(
+      {
+        sub: isUserExists.id,
+        email: isUserExists.email,
+      },
+      {
+        expiresIn: '1d',
+      },
+    );
+
+    return { user: isUserExists, accessToken };
   }
 }
