@@ -68,7 +68,8 @@ export class ListsService {
   }
 
   async update(id: string, updateListDto: UpdateListDto) {
-    return this.listModel.updateOne({ _id: id }, updateListDto).exec();
+    await this.listModel.updateOne({ _id: id }, updateListDto).exec();
+    return this.listModel.findById(id).select('name color tasksCount');
   }
 
   async remove(id: string) {

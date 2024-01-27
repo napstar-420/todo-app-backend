@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Req,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto';
 import { ListsService } from './lists.service';
@@ -35,7 +36,7 @@ export class ListsController {
   @Patch(':id')
   update(
     @Param('id', ValidateMongoId) id: string,
-    @Body() updateListDto: UpdateListDto,
+    @Body(ValidationPipe) updateListDto: UpdateListDto,
   ) {
     return this.listsService.update(id, updateListDto);
   }
