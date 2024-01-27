@@ -14,9 +14,9 @@ export class CreateListDto {
   @MaxLength(64)
   readonly name: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsHexColor()
-  readonly color: number;
+  readonly color: string;
 
   @IsOptional()
   @IsArray()

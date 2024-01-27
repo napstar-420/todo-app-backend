@@ -22,6 +22,23 @@ export class TasksService {
     return this.taskModel.find({ list: listID });
   }
 
+  async findTodayTasksCount() {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date();
+    endOfDay.setDate(endOfDay.getDate() + 1);
+    endOfDay.setHours(0, 0, 0, 0);
+
+    return this.taskModel.countDocuments({
+      dueDate: { $gte: startOfDay, $lt: endOfDay },
+    });
+  }
+
+  async findUpcomingTasksLength() {
+    const currentDate = new Date();
+    return this.taskModel.countDocuments({ dueDate: { $gt: currentDate } });
+  }
+
   async findOne(id: string) {
     if (!isMongoId(id)) {
       throw new NotFoundException('Invalid mongo ID');

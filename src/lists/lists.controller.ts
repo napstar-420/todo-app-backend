@@ -24,7 +24,7 @@ export class ListsController {
 
   @Get(':id')
   findOne(@Param('id', ValidateMongoId) id: string) {
-    return this.listsService.findOne(id);
+    return this.listsService.findOneByID(id);
   }
 
   @Post()

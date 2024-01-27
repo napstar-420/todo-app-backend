@@ -7,11 +7,11 @@ export type ListSchema = HydratedDocument<List>;
 
 @Schema()
 export class List {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
-  @Prop({ default: 111 })
-  color: number; // Hexadecimal
+  @Prop({ required: true })
+  color: string;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   user: User;
