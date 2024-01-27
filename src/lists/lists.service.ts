@@ -72,6 +72,6 @@ export class ListsService {
   }
 
   async remove(id: string) {
-    return this.listModel.deleteOne({ id });
+    return this.listModel.deleteOne({ _id: id });
   }
 }
