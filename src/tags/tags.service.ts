@@ -8,6 +8,10 @@ import { CreateTagDto } from './dto/create-tag.dto';
 export class TagsService {
   constructor(@InjectModel(Tag.name) private tagModel: Model<Tag>) {}
 
+  async findAll(user: string) {
+    return this.tagModel.find({ user }).exec();
+  }
+
   async create(createTagDto: CreateTagDto) {
     return new this.tagModel(createTagDto).save();
   }
