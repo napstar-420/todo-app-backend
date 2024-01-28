@@ -14,7 +14,7 @@ export class Tag {
     required: true,
     type: [{ required: true, type: Types.ObjectId, ref: 'Task' }],
   })
-  task: Task[];
+  tasks: Task[];
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   user: User;

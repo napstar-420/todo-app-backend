@@ -26,7 +26,7 @@ export class ListsService {
 
     const lists = await this.listModel
       .find({ user })
-      .select('name color tasksCount')
+      .select('-user -tasks')
       .exec();
 
     const todayTasksCount = await this.tasksService.findTodayTasksCount();
@@ -39,10 +39,10 @@ export class ListsService {
   async findOneByID(id: string) {
     const list = await this.listModel
       .findById(id)
-      .select('name color tasks')
+      .select('-user')
       .populate({
         path: 'tasks',
-        select: 'title dueDate subtasksCount',
+        select: '-user -subtasks -list',
       })
       .exec();
 
